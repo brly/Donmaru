@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'cinch'
 require 'nokogiri'
 require 'open-uri'
@@ -47,11 +48,11 @@ bot.on :message, /^donmaru: 今日は何丼\？/ do |m|
 
         imgURL = "http://donmaru.kyu-mu.net/img/don/menu#{rand}.jpg"
 
-        luckeyDon = doc.xpath("//html/body/div/div/h2").text
+        luckyDon = doc.xpath("//html/body/div/div/h2").text
         if rand == 29 then
             m.reply "#{m.user.nick}にはうんこ丼(うんこ)がおすすめ,#{imgURL}"
         else
-            m.reply "#{m.user.nick}の今日のラッキー丼は#{luckeyDon}(#{netaStr}),#{imgURL}"
+            m.reply "#{m.user.nick}の今日のラッキー丼は#{luckyDon}(#{netaStr}),#{imgURL}"
         end
     end
 end
