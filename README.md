@@ -9,4 +9,5 @@ ruby donmaru.rb で実行
 
 書き方はコード見たらわかると思われ
 
+サンプルコード
 https://github.com/cinchrb/cinch
