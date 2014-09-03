@@ -53,24 +53,25 @@ bot.on :message do |m|
     end
 end
 
+TAX = 1.08
 #並盛り
 def putsRegularSizePrice(m)
-    m.reply "並盛りは540円（税込）だどん"
+    m.reply "並盛りは#{(500*TAX).round}円（税込）だどん"
 end
 
 #大盛り
 def putsLargeSizePrice(m)
-    m.reply "ご飯大盛りは648円（税込）だどん"
+    m.reply "ご飯大盛りは#{(600*TAX).round}円（税込）だどん"
 end
 
 #ネタ大盛り
 def putsSushiMaterialLargeSizePrice(m)
-    m.reply "ネタ大盛りは756円（税込）だどん"
+    m.reply "ネタ大盛りは#{(700*TAX).round}円（税込）だどん"
 end
 
 #特盛り
 def putsSpecialSizePrice(m)
-    m.reply "特盛りは864円（税込）だどん"
+    m.reply "特盛りは#{(800*TAX).round}円（税込）だどん"
 end
 
 #競合店
