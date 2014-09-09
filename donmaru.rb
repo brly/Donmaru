@@ -53,25 +53,37 @@ bot.on :message do |m|
     end
 end
 
-TAX = 1.08
+# 税込価格を計算
+def calcDonPrice(税抜価格)
+    消費税 = 1.08
+    価格 = (税抜価格 * 消費税).round
+    一の位 = 価格 % 10
+    if 一の位 < 5
+        価格 -= 一の位
+    else
+        価格 -= (一の位 - 5)
+    end
+    return 価格
+end
+    
 #並盛り
 def putsRegularSizePrice(m)
-    m.reply "並盛りは#{(500*TAX).round}円（税込）だどん"
+    m.reply "並盛りは#{calcDonPrice(500)}円（税込）だどん"
 end
 
 #大盛り
 def putsLargeSizePrice(m)
-    m.reply "ご飯大盛りは#{(600*TAX).round}円（税込）だどん"
+    m.reply "ご飯大盛りは#{calcDonPrice(600)}円（税込）だどん"
 end
 
 #ネタ大盛り
 def putsSushiMaterialLargeSizePrice(m)
-    m.reply "ネタ大盛りは#{(700*TAX).round}円（税込）だどん"
+    m.reply "ネタ大盛りは#{calcDonPrice(700)}円（税込）だどん"
 end
 
 #特盛り
 def putsSpecialSizePrice(m)
-    m.reply "特盛りは#{(800*TAX).round}円（税込）だどん"
+    m.reply "特盛りは#{calcDonPrice(800)}円（税込）だどん"
 end
 
 #競合店
