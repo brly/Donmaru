@@ -53,24 +53,34 @@ bot.on :message do |m|
     end
 end
 
+# 税込価格を計算
+def 税抜き(税抜価格)
+    消費税 = 1.08
+    価格 = (税抜価格 * 消費税).round
+    # 1の位を 0-4 => 0, 5-9 => 5 にする
+    一の位 = 価格 % 10
+    価格 -= 一の位 % 5
+    return 価格
+end
+    
 #並盛り
 def putsRegularSizePrice(m)
-    m.reply "並盛りは540円（税込）だどん"
+    m.reply "並盛りは#{税抜き(500)}円（税込）だどん"
 end
 
 #大盛り
 def putsLargeSizePrice(m)
-    m.reply "ご飯大盛りは648円（税込）だどん"
+    m.reply "ご飯大盛りは#{税抜き(600)}円（税込）だどん"
 end
 
 #ネタ大盛り
 def putsSushiMaterialLargeSizePrice(m)
-    m.reply "ネタ大盛りは756円（税込）だどん"
+    m.reply "ネタ大盛りは#{税抜き(700)}円（税込）だどん"
 end
 
 #特盛り
 def putsSpecialSizePrice(m)
-    m.reply "特盛りは864円（税込）だどん"
+    m.reply "特盛りは#{税抜き(800)}円（税込）だどん"
 end
 
 #競合店
