@@ -1,6 +1,10 @@
+# coding: utf-8
+require 'rubygems'
 require 'cinch'
 require 'nokogiri'
 require 'open-uri'
+require "mechanize"
+require 'kconv'
 
 bot = Cinch::Bot.new do
   configure do |c|
@@ -53,6 +57,45 @@ bot.on :message do |m|
     end
 end
 
+#丼丸部へ加入したときに呼ばれる
+#レジュメに自動的に丼丸タグが追加される
+bot.on :join do |m|
+    #realNameは弊社のメアドなので@以下を削除する処理
+    realName = m.user.realname
+    domain = ""
+    realName.slice!(domain)
+
+    #対象者のレジュメ編集ページのURL
+    baseURL = ""
+    url = baseURL + realName
+
+    #レジュメにログインして丼丸タグをつける処理
+    agent = Mechanize.new
+    loginPage = agent.get(url)
+    loginPage.encoding = "utf-8"
+
+    #ログインフォームを入力(パスワードはローカルで追記する)
+    loginForm = loginPage.forms[1]
+    loginForm["username"] = ""
+    loginForm["password"] = ""
+
+    #レジュメの編集ページへ
+    editPage = agent.submit(loginForm)
+    editPage.encoding = "utf-8"
+
+    #タグに丼丸がないかをチェックしてなければ追加
+    editForm = editPage.form_with(:name => "profile")
+    tagList = editForm["tag"].split(" ")
+    if tagList.delete("丼丸") === nil then
+        editForm['tag'] += " 丼丸"
+        button = editForm.button_with(:value => "保存")
+        agent.submit(editForm, button)
+    end
+
+    #一応歓迎はしておく
+    m.reply "#{m.user.nick}: 丼丸部へようこそだどん"
+end
+
 # 税込価格を計算
 def 税抜き(税抜価格)
     消費税 = 1.08
@@ -62,7 +105,7 @@ def 税抜き(税抜価格)
     価格 -= 一の位 % 5
     return 価格
 end
-    
+
 #並盛り
 def putsRegularSizePrice(m)
     m.reply "並盛りは#{税抜き(500)}円（税込）だどん"
@@ -95,7 +138,7 @@ end
 
 #名言
 def putsWittyRemark(m)
-    repList = ["人生ing", "人生はツキが３００％", "神様が「もう十分だよ」と言われる時まで、自分らしく生きたい"]
+    repList = ["人生ing", "人生はツキが３００％", "神様が「もう十分だよ」と言われる時まで、自分らしく生きたい", "「喜びの共有」は自由な発想と行動から生まれる。"]
     rand = [*0..repList.length-1].sample
     m.reply "#{repList[rand]}"
 end
@@ -110,7 +153,12 @@ def putsNumberOfShops(m, str)
     elsif future < 2007 then
         m.reply "まだ創業してないどん!丼丸は2007年にオープンしたどん!ちなみに笹船は1979年からあるどん!"
     else
-        m.reply "#{((future - 2015) * 360.4 + 200).round}店舗だどん!!!"
+        shops = ((future - 2015) * 360.4 + 200).round
+        if shops < 0 then
+            m.reply "うるせぇ。知らんがな"
+        else
+            m.reply "#{shops}店舗だどん!!!"
+        end
     end
 end
 
@@ -172,5 +220,4 @@ def replySomething(m)
     rand = [*0..repList.length-1].sample
     m.reply "#{m.user.nick}は#{repList[rand]}だどん"
 end
-
 bot.start
